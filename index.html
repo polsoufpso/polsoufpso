@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POLSO | El pulso del poder, la política y la opinión independiente</title>
+  <meta name="description" content="POLSO es un medio digital dedicado a la política, la actualidad, el análisis y la opinión independiente. Columnas de opinión, investigaciones y cobertura legislativa.">
+  <meta name="author" content="POLSO Digital">
+  <meta property="og:title" content="POLSO | Periodismo Político y Opinión">
+  <meta property="og:description" content="Plataforma de periodismo político, análisis institucional, columnas de opinión y contenido audiovisual.">
+  <meta property="og:type" content="website">
+
+  <!-- Favicon Oficial POLSO -->
+  <link rel="icon" type="image/png" href="assets/images/logo-principal.png">
+
+  <!-- Google Fonts: Inter (Sans UI), Playfair Display (Serif Titulares), Merriweather (Serif Editorial) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 (Iconos vectoriales) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Tailwind CSS CDN con configuración de colores POLSO -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            polso: {
+              blue: '#213863',
+              blueDark: '#172746',
+              blueLight: '#2c4a83',
+              yellow: '#F7C901',
+              yellowHover: '#e0b600',
+              yellowLight: '#fef7db'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+            editorial: ['Merriweather', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Hoja de estilos personalizada de POLSO -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="bg-[#FAFAFA] text-slate-800 flex flex-col min-h-screen">
+
+  <!-- Barra de progreso de lectura para artículos individuales -->
+  <div id="reading-progress-bar"></div>
+
+  <!-- Contenedor flotante para notificaciones Toast -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- =========================================================================
+       ENCABEZADO EDITORIAL (SECCIÓN 3 Y 4A DEL PROMPT)
+       ========================================================================= -->
+  <header class="w-full bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
+
+    <!-- 1. Barra Superior Institucional (Fecha, Edición, Redes y Enlaces Rápidos) -->
+    <div class="bg-slate-50 border-b border-slate-200 py-1.5 px-4 text-xs text-slate-500">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <span id="header-current-date" class="font-medium text-slate-700">Miércoles, 14 de Octubre de 2026</span>
+          <span class="text-slate-300">|</span>
+          <span class="font-bold text-[#213863] flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#F7C901]"></span>
+            Edición Colombia & Latinoamérica
+          </span>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <!-- Redes Sociales de POLSO -->
+          <div class="hidden sm:flex items-center gap-2.5 text-slate-500">
+            <span class="text-[11px] font-semibold text-slate-400">Síganos:</span>
+            <a href="https://twitter.com" target="_blank" class="hover:text-[#213863] transition-colors" title="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://youtube.com" target="_blank" class="hover:text-red-600 transition-colors" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://facebook.com" target="_blank" class="hover:text-blue-600 transition-colors" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://instagram.com" target="_blank" class="hover:text-pink-600 transition-colors" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://linkedin.com" target="_blank" class="hover:text-blue-700 transition-colors" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+          </div>
+
+          <span class="text-slate-300 hidden sm:inline">|</span>
+
+          <!-- Enlace directo al Panel de Administración -->
+          <a href="#/admin" class="text-xs font-bold text-[#213863] hover:text-[#F7C901] flex items-center gap-1 transition-colors">
+            <i class="fa-solid fa-lock text-[10px]"></i>
+            <span>Panel Editorial</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Encabezado Principal (Logotipo POLSO tipográfico y buscador) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex items-center justify-between">
+      <!-- Botón Menú Hamburguesa para Móvil -->
+      <button
+        onclick="Polso.App.toggleMobileMenu()"
+        class="lg:hidden text-[#213863] hover:text-slate-900 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#213863]"
+        aria-label="Abrir menú de navegación"
+      >
+        <i class="fa-solid fa-bars text-2xl"></i>
+      </button>
+
+      <!-- Logotipo POLSO Oficial -->
+      <div class="flex items-center gap-3">
+        <a href="#/portada" class="flex items-center gap-3.5 group">
+          <img
+            src="assets/images/logo-principal.png"
+            alt="POLSO - Sociedad Política"
+            class="w-12 h-12 sm:w-14 sm:h-14 object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300"
+          >
+          <div>
+            <div class="flex items-center">
+              <span class="text-3xl sm:text-4xl font-black tracking-tight text-[#213863] font-serif-editorial">
+                POLSO
+              </span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#F7C901] ml-1 mb-1"></span>
+            </div>
+            <span class="hidden md:block text-[10px] tracking-widest text-slate-500 font-bold uppercase -mt-1">
+              Sociedad Política · Criterio & Opinión
+            </span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Buscador rápido y CTA "Últimas publicaciones" -->
+      <div class="flex items-center gap-3">
+        <!-- Disparador de Búsqueda -->
+        <button
+          onclick="Polso.App.openSearchModal()"
+          class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-600 px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors border border-slate-200"
+          title="Buscar artículos (Atajo: Cmd+K o Ctrl+K)"
+        >
+          <i class="fa-solid fa-magnifying-glass text-[#213863]"></i>
+          <span class="hidden md:inline">Buscar...</span>
+          <kbd class="hidden lg:inline-block bg-white text-slate-400 text-[10px] px-1.5 py-0.5 rounded border border-slate-300 font-mono">⌘K</kbd>
+        </button>
+
+        <!-- Botón Destacado: "Últimas Publicaciones" -->
+        <a
+          href="#/ultimas"
+          class="bg-[#F7C901] hover:bg-[#e0b600] text-[#213863] font-bold px-4 py-2 rounded-lg text-xs tracking-wide transition-all shadow-sm flex items-center gap-1.5"
+        >
+          <i class="fa-solid fa-bolt text-xs"></i>
+          <span class="hidden sm:inline">Últimas Publicaciones</span>
+          <span class="sm:hidden">Recientes</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 3. Barra de Navegación Principal (Azul Institucional con Menús Desplegables) -->
+    <nav class="bg-[#213863] text-white border-t border-[#172746] shadow-sm hidden lg:block" aria-label="Navegación principal">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ul class="flex items-center space-x-1 text-xs font-bold uppercase tracking-wider">
+
+          <!-- INICIO (Desplegable) -->
+          <li class="relative dropdown group">
+            <button
+              class="dropdown-toggle-btn flex items-center gap-1 px-3.5 py-3.5 hover:text-[#F7C901] hover:bg-[#172746] transition-colors focus:outline-none"
+              aria-expanded="false"
+            >
+              <span>Inicio</span>
+              <i class="fa-solid fa-chevron-down text-[9px] text-[#F7C901]"></i>
+            </button>
+            <div class="dropdown-menu absolute left-0 top-full w-56 bg-white text-slate-800 rounded-b-lg shadow-xl border-t-2 border-[#F7C901] py-2 z-50">
+              <a href="#/portada" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Portada</a>
+              <a href="#/ultimas" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Últimas publicaciones</a>
+              <a href="#/destacados" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Contenido destacado</a>
+            </div>
+          </li>
+
+          <!-- ACTUALIDAD (Desplegable) -->
+          <li class="relative dropdown group">
+            <button
+              class="dropdown-toggle-btn flex items-center gap-1 px-3.5 py-3.5 hover:text-[#F7C901] hover:bg-[#172746] transition-colors focus:outline-none"
+              aria-expanded="false"
+            >
+              <span>Actualidad</span>
+              <i class="fa-solid fa-chevron-down text-[9px] text-[#F7C901]"></i>
+            </button>
+            <div class="dropdown-menu absolute left-0 top-full w-64 bg-white text-slate-800 rounded-b-lg shadow-xl border-t-2 border-[#F7C901] py-2 z-50">
+              <a href="#/categoria/politica-nacional" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Política nacional</a>
+              <a href="#/categoria/politica-regional" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Política regional</a>
+              <a href="#/categoria/politica-local" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Política local</a>
+              <a href="#/categoria/politica-internacional" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Política internacional</a>
+              <a href="#/categoria/gobierno-congreso" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Gobierno y Congreso</a>
+              <a href="#/categoria/elecciones" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Elecciones</a>
+            </div>
+          </li>
+
+          <!-- OPINIÓN (Desplegable) -->
+          <li class="relative dropdown group">
+            <button
+              class="dropdown-toggle-btn flex items-center gap-1 px-3.5 py-3.5 hover:text-[#F7C901] hover:bg-[#172746] transition-colors focus:outline-none"
+              aria-expanded="false"
+            >
+              <span>Opinión</span>
+              <i class="fa-solid fa-chevron-down text-[9px] text-[#F7C901]"></i>
+            </button>
+            <div class="dropdown-menu absolute left-0 top-full w-60 bg-white text-slate-800 rounded-b-lg shadow-xl border-t-2 border-[#F7C901] py-2 z-50">
+              <a href="#/opinion" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Columnas de opinión</a>
+              <a href="#/columnistas" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Nuestros columnistas</a>
+              <a href="#/opinion" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Últimas opiniones</a>
+              <a href="#/opinion/debates" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Debates y perspectivas</a>
+            </div>
+          </li>
+
+          <!-- ANÁLISIS (Desplegable) -->
+          <li class="relative dropdown group">
+            <button
+              class="dropdown-toggle-btn flex items-center gap-1 px-3.5 py-3.5 hover:text-[#F7C901] hover:bg-[#172746] transition-colors focus:outline-none"
+              aria-expanded="false"
+            >
+              <span>Análisis</span>
+              <i class="fa-solid fa-chevron-down text-[9px] text-[#F7C901]"></i>
+            </button>
+            <div class="dropdown-menu absolute left-0 top-full w-60 bg-white text-slate-800 rounded-b-lg shadow-xl border-t-2 border-[#F7C901] py-2 z-50">
+              <a href="#/categoria/analisis-politico" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Análisis político</a>
+              <a href="#/especiales/investigaciones" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Informes especiales</a>
+              <a href="#/buscar?q=datos" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Datos y contexto</a>
+              <a href="#/categoria/politicas-publicas" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Políticas públicas</a>
+            </div>
+          </li>
+
+          <!-- POLSO EN VIDEO (Desplegable) -->
+          <li class="relative dropdown group">
+            <button
+              class="dropdown-toggle-btn flex items-center gap-1 px-3.5 py-3.5 text-[#F7C901] hover:bg-[#172746] transition-colors focus:outline-none"
+              aria-expanded="false"
+            >
+              <i class="fa-solid fa-play text-[10px]"></i>
+              <span>POLSO en video</span>
+              <i class="fa-solid fa-chevron-down text-[9px]"></i>
+            </button>
+            <div class="dropdown-menu absolute left-0 top-full w-64 bg-white text-slate-800 rounded-b-lg shadow-xl border-t-2 border-[#F7C901] py-2 z-50">
+              <a href="#/videos/entrevistas" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Entrevistas</a>
+              <a href="#/videos/analisis" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Análisis en video</a>
+              <a href="#/videos/programas" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Programas</a>
+              <a href="#/videos/recientes" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Videos recientes</a>
+              <a href="#/videos" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Lista de reproducción YouTube</a>
+            </div>
+          </li>
+
+          <!-- ESPECIALES (Desplegable) -->
+          <li class="relative dropdown group">
+            <button
+              class="dropdown-toggle-btn flex items-center gap-1 px-3.5 py-3.5 hover:text-[#F7C901] hover:bg-[#172746] transition-colors focus:outline-none"
+              aria-expanded="false"
+            >
+              <span>Especiales</span>
+              <i class="fa-solid fa-chevron-down text-[9px] text-[#F7C901]"></i>
+            </button>
+            <div class="dropdown-menu absolute left-0 top-full w-64 bg-white text-slate-800 rounded-b-lg shadow-xl border-t-2 border-[#F7C901] py-2 z-50">
+              <a href="#/especiales/electorales" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Especiales electorales</a>
+              <a href="#/especiales/perfiles" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Perfiles políticos</a>
+              <a href="#/especiales/investigaciones" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Investigaciones</a>
+              <a href="#/especiales/coberturas" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Coberturas temáticas</a>
+            </div>
+          </li>
+
+          <!-- NOSOTROS (Desplegable) -->
+          <li class="relative dropdown group">
+            <button
+              class="dropdown-toggle-btn flex items-center gap-1 px-3.5 py-3.5 hover:text-[#F7C901] hover:bg-[#172746] transition-colors focus:outline-none"
+              aria-expanded="false"
+            >
+              <span>Nosotros</span>
+              <i class="fa-solid fa-chevron-down text-[9px] text-[#F7C901]"></i>
+            </button>
+            <div class="dropdown-menu absolute right-0 top-full w-60 bg-white text-slate-800 rounded-b-lg shadow-xl border-t-2 border-[#F7C901] py-2 z-50">
+              <a href="#/nosotros/quienes-somos" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Quiénes somos</a>
+              <a href="#/nosotros/linea-editorial" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Línea editorial</a>
+              <a href="#/nosotros/equipo" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Equipo</a>
+              <a href="#/nosotros/contacto" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Contacto</a>
+              <a href="#/nosotros/privacidad" class="block px-4 py-2 hover:bg-slate-50 hover:text-[#213863] text-xs font-semibold">Política de privacidad</a>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- =========================================================================
+       DRAWER / MENÚ MÓVIL RESPONSIVE
+       ========================================================================= -->
+  <div id="mobile-drawer-backdrop" onclick="Polso.App.closeMobileMenu()" class="hidden fixed inset-0 z-50 modal-backdrop"></div>
+  <aside id="mobile-drawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-white z-50 shadow-2xl -translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between overflow-y-auto">
+    <div class="p-6">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
+        <a href="#/portada" onclick="Polso.App.closeMobileMenu()" class="flex items-center gap-3">
+          <img
+            src="assets/images/logo-principal.png"
+            alt="POLSO"
+            class="w-10 h-10 object-contain drop-shadow-sm"
+          >
+          <div>
+            <span class="text-2xl font-black font-serif-editorial text-[#213863] block leading-none">POLSO</span>
+            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Sociedad Política</span>
+          </div>
+        </a>
+        <button onclick="Polso.App.closeMobileMenu()" class="text-slate-400 hover:text-slate-700 p-1">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Buscador en móvil -->
+      <div class="mb-6">
+        <form onsubmit="event.preventDefault(); Polso.App.handleGlobalSearch(this.q.value);" class="relative">
+          <input
+            type="text"
+            name="q"
+            placeholder="Buscar publicaciones..."
+            class="w-full pl-9 pr-4 py-2.5 bg-slate-100 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-[#213863]"
+          >
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        </form>
+      </div>
+
+      <!-- Menús desplegables en Acordeón para móvil -->
+      <nav class="space-y-1 text-sm font-bold text-slate-700">
+        <!-- Inicio -->
+        <div>
+          <button onclick="Polso.App.toggleMobileAccordion('mob-inicio')" class="w-full flex items-center justify-between py-2.5 px-3 rounded hover:bg-slate-50 text-left">
+            <span>Inicio</span>
+            <i id="icon-mob-inicio" class="fa-solid fa-chevron-down text-xs transition-transform"></i>
+          </button>
+          <div id="mob-inicio" class="hidden pl-4 py-1 space-y-1 text-xs text-slate-600">
+            <a href="#/portada" class="block py-1.5 hover:text-[#213863]">Portada</a>
+            <a href="#/ultimas" class="block py-1.5 hover:text-[#213863]">Últimas publicaciones</a>
+            <a href="#/destacados" class="block py-1.5 hover:text-[#213863]">Contenido destacado</a>
+          </div>
+        </div>
+
+        <!-- Actualidad -->
+        <div>
+          <button onclick="Polso.App.toggleMobileAccordion('mob-actualidad')" class="w-full flex items-center justify-between py-2.5 px-3 rounded hover:bg-slate-50 text-left">
+            <span>Actualidad</span>
+            <i id="icon-mob-actualidad" class="fa-solid fa-chevron-down text-xs transition-transform"></i>
+          </button>
+          <div id="mob-actualidad" class="hidden pl-4 py-1 space-y-1 text-xs text-slate-600">
+            <a href="#/categoria/politica-nacional" class="block py-1.5 hover:text-[#213863]">Política nacional</a>
+            <a href="#/categoria/politica-regional" class="block py-1.5 hover:text-[#213863]">Política regional</a>
+            <a href="#/categoria/politica-local" class="block py-1.5 hover:text-[#213863]">Política local</a>
+            <a href="#/categoria/politica-internacional" class="block py-1.5 hover:text-[#213863]">Política internacional</a>
+            <a href="#/categoria/gobierno-congreso" class="block py-1.5 hover:text-[#213863]">Gobierno y Congreso</a>
+            <a href="#/categoria/elecciones" class="block py-1.5 hover:text-[#213863]">Elecciones</a>
+          </div>
+        </div>
+
+        <!-- Opinión -->
+        <div>
+          <button onclick="Polso.App.toggleMobileAccordion('mob-opinion')" class="w-full flex items-center justify-between py-2.5 px-3 rounded hover:bg-slate-50 text-left">
+            <span>Opinión</span>
+            <i id="icon-mob-opinion" class="fa-solid fa-chevron-down text-xs transition-transform"></i>
+          </button>
+          <div id="mob-opinion" class="hidden pl-4 py-1 space-y-1 text-xs text-slate-600">
+            <a href="#/opinion" class="block py-1.5 hover:text-[#213863]">Columnas de opinión</a>
+            <a href="#/columnistas" class="block py-1.5 hover:text-[#213863]">Nuestros columnistas</a>
+            <a href="#/opinion/debates" class="block py-1.5 hover:text-[#213863]">Debates y perspectivas</a>
+          </div>
+        </div>
+
+        <!-- Análisis -->
+        <div>
+          <button onclick="Polso.App.toggleMobileAccordion('mob-analisis')" class="w-full flex items-center justify-between py-2.5 px-3 rounded hover:bg-slate-50 text-left">
+            <span>Análisis</span>
+            <i id="icon-mob-analisis" class="fa-solid fa-chevron-down text-xs transition-transform"></i>
+          </button>
+          <div id="mob-analisis" class="hidden pl-4 py-1 space-y-1 text-xs text-slate-600">
+            <a href="#/categoria/analisis-politico" class="block py-1.5 hover:text-[#213863]">Análisis político</a>
+            <a href="#/especiales/investigaciones" class="block py-1.5 hover:text-[#213863]">Informes especiales</a>
+            <a href="#/buscar?q=datos" class="block py-1.5 hover:text-[#213863]">Datos y contexto</a>
+            <a href="#/categoria/politicas-publicas" class="block py-1.5 hover:text-[#213863]">Políticas públicas</a>
+          </div>
+        </div>
+
+        <!-- POLSO en video -->
+        <div>
+          <button onclick="Polso.App.toggleMobileAccordion('mob-video')" class="w-full flex items-center justify-between py-2.5 px-3 rounded hover:bg-slate-50 text-left text-[#213863]">
+            <span class="flex items-center gap-2">
+              <i class="fa-solid fa-play text-xs text-[#F7C901]"></i>
+              POLSO en video
+            </span>
+            <i id="icon-mob-video" class="fa-solid fa-chevron-down text-xs transition-transform"></i>
+          </button>
+          <div id="mob-video" class="hidden pl-4 py-1 space-y-1 text-xs text-slate-600">
+            <a href="#/videos/entrevistas" class="block py-1.5 hover:text-[#213863]">Entrevistas</a>
+            <a href="#/videos/analisis" class="block py-1.5 hover:text-[#213863]">Análisis en video</a>
+            <a href="#/videos/programas" class="block py-1.5 hover:text-[#213863]">Programas</a>
+            <a href="#/videos/recientes" class="block py-1.5 hover:text-[#213863]">Videos recientes</a>
+            <a href="#/videos" class="block py-1.5 hover:text-[#213863]">Lista de reproducción YouTube</a>
+          </div>
+        </div>
+
+        <!-- Especiales -->
+        <div>
+          <button onclick="Polso.App.toggleMobileAccordion('mob-especiales')" class="w-full flex items-center justify-between py-2.5 px-3 rounded hover:bg-slate-50 text-left">
+            <span>Especiales</span>
+            <i id="icon-mob-especiales" class="fa-solid fa-chevron-down text-xs transition-transform"></i>
+          </button>
+          <div id="mob-especiales" class="hidden pl-4 py-1 space-y-1 text-xs text-slate-600">
+            <a href="#/especiales/electorales" class="block py-1.5 hover:text-[#213863]">Especiales electorales</a>
+            <a href="#/especiales/perfiles" class="block py-1.5 hover:text-[#213863]">Perfiles políticos</a>
+            <a href="#/especiales/investigaciones" class="block py-1.5 hover:text-[#213863]">Investigaciones</a>
+            <a href="#/especiales/coberturas" class="block py-1.5 hover:text-[#213863]">Coberturas temáticas</a>
+          </div>
+        </div>
+
+        <!-- Nosotros -->
+        <div>
+          <button onclick="Polso.App.toggleMobileAccordion('mob-nosotros')" class="w-full flex items-center justify-between py-2.5 px-3 rounded hover:bg-slate-50 text-left">
+            <span>Nosotros</span>
+            <i id="icon-mob-nosotros" class="fa-solid fa-chevron-down text-xs transition-transform"></i>
+          </button>
+          <div id="mob-nosotros" class="hidden pl-4 py-1 space-y-1 text-xs text-slate-600">
+            <a href="#/nosotros/quienes-somos" class="block py-1.5 hover:text-[#213863]">Quiénes somos</a>
+            <a href="#/nosotros/linea-editorial" class="block py-1.5 hover:text-[#213863]">Línea editorial</a>
+            <a href="#/nosotros/equipo" class="block py-1.5 hover:text-[#213863]">Equipo</a>
+            <a href="#/nosotros/contacto" class="block py-1.5 hover:text-[#213863]">Contacto</a>
+            <a href="#/nosotros/privacidad" class="block py-1.5 hover:text-[#213863]">Política de privacidad</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <div class="p-6 bg-slate-50 border-t border-slate-200">
+      <a href="#/admin" class="w-full bg-[#213863] text-white py-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-2">
+        <i class="fa-solid fa-lock text-[#F7C901]"></i>
+        <span>Panel Editorial CMS</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- =========================================================================
+       MODAL DE BÚSQUEDA GLOBAL (Cmd+K / Ctrl+K)
+       ========================================================================= -->
+  <div id="global-search-modal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-start justify-center p-4 pt-20">
+    <div class="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl border border-slate-200">
+      <div class="p-4 border-b border-slate-200 flex items-center gap-3">
+        <i class="fa-solid fa-magnifying-glass text-[#213863] text-lg"></i>
+        <input
+          id="global-search-input"
+          type="text"
+          placeholder="Escriba para buscar por titular, autor o tema y presione Enter..."
+          class="w-full text-base focus:outline-none text-slate-800 placeholder-slate-400"
+          onkeydown="if(event.key === 'Enter'){ Polso.App.handleGlobalSearch(this.value); }"
+        >
+        <button onclick="Polso.App.closeSearchModal()" class="text-slate-400 hover:text-slate-700 text-xs uppercase font-bold px-2 py-1 bg-slate-100 rounded">
+          ESC
+        </button>
+      </div>
+      <div class="p-5 bg-slate-50 text-xs text-slate-500 flex items-center justify-between">
+        <span>Sugerencias: <button onclick="Polso.App.handleGlobalSearch('Congreso')" class="text-[#213863] font-bold hover:underline">Congreso</button>, <button onclick="Polso.App.handleGlobalSearch('Elecciones')" class="text-[#213863] font-bold hover:underline">Elecciones</button>, <button onclick="Polso.App.handleGlobalSearch('Reforma')" class="text-[#213863] font-bold hover:underline">Reforma</button></span>
+        <button
+          onclick="Polso.App.handleGlobalSearch(document.getElementById('global-search-input').value)"
+          class="bg-[#213863] text-white px-4 py-1.5 rounded-lg font-bold hover:bg-[#172746]"
+        >
+          Buscar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       CONTENIDO PRINCIPAL (MONTAJE DE VISTAS POR EL ROUTER)
+       ========================================================================= -->
+  <main id="main-content" class="flex-1">
+    <!-- El Router inyecta dinámicamente aquí la vista activa -->
+  </main>
+
+  <!-- =========================================================================
+       PIE DE PÁGINA (SECCIÓN 4I DEL PROMPT)
+       ========================================================================= -->
+  <footer class="bg-[#213863] text-white border-t-4 border-[#F7C901] pt-14 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-700">
+
+        <!-- Columna 1: Identidad POLSO -->
+        <div class="lg:col-span-2 space-y-4">
+          <div class="flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-white p-1 flex items-center justify-center shadow-md">
+              <img src="assets/images/logo-principal.png" alt="POLSO" class="w-full h-full object-contain">
+            </div>
+            <div>
+              <span class="text-3xl font-black font-serif-editorial text-white tracking-tight leading-none block">POLSO</span>
+              <span class="text-[10px] text-[#F7C901] font-bold uppercase tracking-widest">Sociedad Política UFPSO</span>
+            </div>
+          </div>
+
+          <p class="text-slate-300 text-sm leading-relaxed max-w-sm font-normal">
+            Medio de comunicación digital independiente especializado en el análisis de poder, coyuntura política nacional e internacional, investigaciones de fondo y debate de opinión riguroso.
+          </p>
+
+          <div class="flex items-center gap-3 pt-2">
+            <a href="https://twitter.com" target="_blank" class="w-9 h-9 rounded-full bg-[#172746] hover:bg-[#F7C901] hover:text-[#213863] text-white flex items-center justify-center transition-colors"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://youtube.com" target="_blank" class="w-9 h-9 rounded-full bg-[#172746] hover:bg-red-600 text-white flex items-center justify-center transition-colors"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://facebook.com" target="_blank" class="w-9 h-9 rounded-full bg-[#172746] hover:bg-blue-600 text-white flex items-center justify-center transition-colors"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://instagram.com" target="_blank" class="w-9 h-9 rounded-full bg-[#172746] hover:bg-pink-600 text-white flex items-center justify-center transition-colors"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://linkedin.com" target="_blank" class="w-9 h-9 rounded-full bg-[#172746] hover:bg-blue-700 text-white flex items-center justify-center transition-colors"><i class="fa-brands fa-linkedin-in"></i></a>
+          </div>
+        </div>
+
+        <!-- Columna 2: Actualidad & Secciones -->
+        <div>
+          <h4 class="text-xs font-black uppercase tracking-wider text-[#F7C901] mb-4">Actualidad</h4>
+          <ul class="space-y-2 text-xs text-slate-300">
+            <li><a href="#/categoria/politica-nacional" class="hover:text-white transition-colors">Política nacional</a></li>
+            <li><a href="#/categoria/politica-regional" class="hover:text-white transition-colors">Política regional</a></li>
+            <li><a href="#/categoria/politica-local" class="hover:text-white transition-colors">Política local</a></li>
+            <li><a href="#/categoria/politica-internacional" class="hover:text-white transition-colors">Política internacional</a></li>
+            <li><a href="#/categoria/gobierno-congreso" class="hover:text-white transition-colors">Gobierno y Congreso</a></li>
+            <li><a href="#/categoria/elecciones" class="hover:text-white transition-colors">Elecciones</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 3: Opinión & Análisis -->
+        <div>
+          <h4 class="text-xs font-black uppercase tracking-wider text-[#F7C901] mb-4">Opinión & Video</h4>
+          <ul class="space-y-2 text-xs text-slate-300">
+            <li><a href="#/opinion" class="hover:text-white transition-colors">Columnas de opinión</a></li>
+            <li><a href="#/columnistas" class="hover:text-white transition-colors">Nuestros columnistas</a></li>
+            <li><a href="#/opinion/debates" class="hover:text-white transition-colors">Debates y perspectivas</a></li>
+            <li><a href="#/videos" class="hover:text-white transition-colors">POLSO en video</a></li>
+            <li><a href="#/videos/entrevistas" class="hover:text-white transition-colors">Entrevistas exclusivas</a></li>
+            <li><a href="#/especiales/investigaciones" class="hover:text-white transition-colors">Investigaciones especiales</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 4: Medio & Legal -->
+        <div>
+          <h4 class="text-xs font-black uppercase tracking-wider text-[#F7C901] mb-4">Nosotros</h4>
+          <ul class="space-y-2 text-xs text-slate-300">
+            <li><a href="#/nosotros/quienes-somos" class="hover:text-white transition-colors">Quiénes somos</a></li>
+            <li><a href="#/nosotros/linea-editorial" class="hover:text-white transition-colors">Línea editorial & Ética</a></li>
+            <li><a href="#/nosotros/equipo" class="hover:text-white transition-colors">Equipo de redacción</a></li>
+            <li><a href="#/nosotros/contacto" class="hover:text-white transition-colors">Contacto directo</a></li>
+            <li><a href="#/nosotros/privacidad" class="hover:text-white transition-colors">Política de privacidad</a></li>
+            <li><a href="#/admin" class="text-[#F7C901] font-bold hover:underline">Acceso a redacción (CMS)</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Barra final de derechos y autoría -->
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
+        <div>
+          © 2026 <strong>POLSO</strong>. Todos los derechos reservados. Medio periodístico digital.
+        </div>
+        <div class="flex items-center gap-4 text-slate-400">
+          <span>Hecho con criterio e independencia</span>
+          <span>·</span>
+          <a href="#/nosotros/privacidad" class="hover:text-slate-200">Términos de uso</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       SCRIPTS MODULARES DE LA PLATAFORMA (CARGA SECUENCIAL SIN CORS ISSUES)
+       ========================================================================= -->
+  <script src="js/store.js"></script>
+  <script src="js/views/home.js"></script>
+  <script src="js/views/article.js"></script>
+  <script src="js/views/category.js"></script>
+  <script src="js/views/opinion.js"></script>
+  <script src="js/views/columnists.js"></script>
+  <script src="js/views/videos.js"></script>
+  <script src="js/views/search.js"></script>
+  <script src="js/views/especiales.js"></script>
+  <script src="js/views/nosotros.js"></script>
+  <script src="js/views/admin.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Inicialización automática -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Polso.App.init();
+    });
+  </script>
+</body>
+</html>
